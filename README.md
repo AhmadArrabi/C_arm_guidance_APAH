@@ -1,7 +1,7 @@
 # C_arm_guidance_APAH
 Official implementation of the paper "Automated C-Arm Positioning via Conformal Landmark Localization" (ICCVW APAH 2025)
 
-![PDF Preview](assets/your_pdf_file.pdf)
+![PDF Preview](assets/conformal_score.pdf)
 
 ## Workflow 🤖
 1. **Train the Model**: Begin by training the model with your dataset using the script located at `src/train_landmark_regression.py`.
