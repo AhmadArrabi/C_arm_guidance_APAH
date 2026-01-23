@@ -11,6 +11,12 @@ from utils import *
 def parse_args(input_args=None):
     parser = argparse.ArgumentParser(description="Training landmark regression model")
     parser.add_argument(
+        "--data_dir",
+        type=str,
+        default='./data/',
+        help=("the directory containing the training data")
+    )
+    parser.add_argument(
         "--batch_size",
         type=int,
         default=32,
@@ -23,7 +29,8 @@ def parse_args(input_args=None):
     parser.add_argument(
         "--log_dir",
         type=str,
-        help=("Be careful when using deep green or black diamond")
+        default='./logs',
+        help=("saving checkpoints and logs")
     )
     parser.add_argument(
         "--exp_name",
@@ -75,7 +82,10 @@ def parse_args(input_args=None):
         default=5,
         help=("weight for the variance regularization term, only used if --is_probabilistic is set")
     )
-
+    parser.add_argument(
+        "--positional_encoding",
+        action="store_true"
+    )
     
     if input_args is not None:
         args = parser.parse_args(input_args)
@@ -104,7 +114,7 @@ def main(args):
     elif args.augmentation_strength == 'none':
         augmentation_params = {'p': 0.0, 'shift': 0.0}
 
-    dataset = Landmark_regression_dataset(augmentation=True, augmentation_params=augmentation_params, head_only=args.head_only, mode='train', size=img_size)
+    dataset = Landmark_regression_dataset(root_data=args.data_dir, augmentation=True, augmentation_params=augmentation_params, head_only=args.head_only, mode='train', size=img_size)
     loader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=8, pin_memory=True)
     
     if args.is_probabilistic:

@@ -116,16 +116,14 @@ def main(args):
     
     model.eval()
     enable_dropout(model)
-    eval_dict = torch.load(f"{log_dir}/calibration_stats_cuda.pt")
+    eval_dict = torch.load(f"{log_dir}/calibration_stats.pt")
     T = 20
     # number of MC dropout samples
 
     with torch.no_grad():    
         for step, batch in tqdm(enumerate(loader_val)):
             X_ray, current_position, landmark_visibility, needed_displacement_gt, patient, ct_size = batch
-            print(patient)
-            save_image(X_ray[20]/2+0.5, f'test_images.png')
-
+             
             X_ray = X_ray.to(DEVICE).to(torch.float32)
             landmark_visibility = landmark_visibility.to(DEVICE).to(torch.float32)
             needed_displacement_gt = needed_displacement_gt.to(DEVICE).to(torch.float32)
@@ -167,7 +165,7 @@ def main(args):
                 within_range_flag_97_nonconformity_mm.append(metrics['within_range_flag_97_nonconformity_mm'])
                 landmark_visibility_list.append(landmark_visibility.cpu().detach().numpy())
             else:
-                #TODO: mse loss for non-probabilistic model
+                #TODO: mse loss for non-probabilistic model (not used in this paper)
                 pass
 
         eval_nll = np.stack(nll_list, axis=0).mean()
@@ -185,7 +183,7 @@ def main(args):
         test_dict['nll'] = eval_nll
         test_dict['mean_euclidean_distances_mm'] = eval_euclidean_distances_mm.sum(axis=0) / valid_cases
 
-        torch.save(test_dict, f'{log_dir}/test_stats_{DEVICE}.pt')        
+        torch.save(test_dict, f'{log_dir}/test_stats.pt')        
 
 if __name__=="__main__":
     args = parse_args()

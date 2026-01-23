@@ -22,14 +22,6 @@ def calculate_test_metrics(means, variance, needed_displacement_gt, landmark_vis
     
     euclidean_distances = torch.norm(needed_displacement_gt - means, dim=-1) * landmark_visibility # (B,14)
     
-    within_range_flag_90_euclidean = (euclidean_distances <= torch.from_numpy(eval_dict['euclidean_0.9_quantile']).to(euclidean_distances.device)) * landmark_visibility 
-    within_range_flag_95_euclidean = (euclidean_distances <= torch.from_numpy(eval_dict['euclidean_0.95_quantile']).to(euclidean_distances.device)) * landmark_visibility 
-    within_range_flag_97_euclidean = (euclidean_distances <= torch.from_numpy(eval_dict['euclidean_0.97_quantile']).to(euclidean_distances.device)) * landmark_visibility 
-
-    within_range_flag_90_nonconformity = (euclidean_distances <= (torch.from_numpy(eval_dict['nonconformity_0.9_quantile']).to(euclidean_distances.device)*(variance.sum(dim=2)+1e-06))) * landmark_visibility 
-    within_range_flag_95_nonconformity = (euclidean_distances <= (torch.from_numpy(eval_dict['nonconformity_0.95_quantile']).to(euclidean_distances.device)*(variance.sum(dim=2)+1e-06))) * landmark_visibility 
-    within_range_flag_97_nonconformity = (euclidean_distances <= (torch.from_numpy(eval_dict['nonconformity_0.97_quantile']).to(euclidean_distances.device)*(variance.sum(dim=2)+1e-06))) * landmark_visibility 
-
     # mm residuals 0-1 -> mm (for interprations and paper writing)
     ct_size = ct_size.unsqueeze(1).repeat(1, 14, 1)
     means_mm = means * ct_size 
@@ -38,29 +30,12 @@ def calculate_test_metrics(means, variance, needed_displacement_gt, landmark_vis
 
     euclidean_distances_mm = torch.norm(needed_displacement_gt_mm - means_mm, dim=-1) * landmark_visibility # (B,14)
     
-    within_range_flag_90_euclidean_mm = (euclidean_distances_mm <= torch.from_numpy(eval_dict['euclidean_mm_0.9_quantile']).to(euclidean_distances_mm.device)) * landmark_visibility 
-    within_range_flag_95_euclidean_mm = (euclidean_distances_mm <= torch.from_numpy(eval_dict['euclidean_mm_0.95_quantile']).to(euclidean_distances_mm.device)) * landmark_visibility 
-    within_range_flag_97_euclidean_mm = (euclidean_distances_mm <= torch.from_numpy(eval_dict['euclidean_mm_0.97_quantile']).to(euclidean_distances_mm.device)) * landmark_visibility 
-
-    print('variance-'*80)
-    print(variance_mm)
-    print('actuall boundry-'*80)
-    print(torch.from_numpy(eval_dict['nonconformity_mm_0.9_quantile']).to(euclidean_distances.device)*(variance_mm.sum(dim=2)))
-    within_range_flag_90_nonconformity_mm = (euclidean_distances_mm <= (torch.from_numpy(eval_dict['nonconformity_mm_0.9_quantile']).to(euclidean_distances.device)*(variance_mm.sum(dim=2)+1e-06))) * landmark_visibility 
-    within_range_flag_95_nonconformity_mm = (euclidean_distances_mm <= (torch.from_numpy(eval_dict['nonconformity_mm_0.95_quantile']).to(euclidean_distances.device)*(variance_mm.sum(dim=2)+1e-06))) * landmark_visibility 
-    within_range_flag_97_nonconformity_mm = (euclidean_distances_mm <= (torch.from_numpy(eval_dict['nonconformity_mm_0.97_quantile']).to(euclidean_distances.device)*(variance_mm.sum(dim=2)+1e-06))) * landmark_visibility 
+    within_range_flag_90_nonconformity_mm = (euclidean_distances_mm <= (torch.from_numpy(eval_dict['nonconformity_mm_0.9_quantile']).to(euclidean_distances_mm.device)*(variance_mm.sum(dim=2)+1e-06))) * landmark_visibility 
+    within_range_flag_95_nonconformity_mm = (euclidean_distances_mm <= (torch.from_numpy(eval_dict['nonconformity_mm_0.95_quantile']).to(euclidean_distances_mm.device)*(variance_mm.sum(dim=2)+1e-06))) * landmark_visibility 
+    within_range_flag_97_nonconformity_mm = (euclidean_distances_mm <= (torch.from_numpy(eval_dict['nonconformity_mm_0.97_quantile']).to(euclidean_distances_mm.device)*(variance_mm.sum(dim=2)+1e-06))) * landmark_visibility 
 
     return {'loss_nll': loss_nll.item(),
             'euclidean_distances_mm': euclidean_distances_mm.cpu().detach().numpy(),
-            'within_range_flag_90_euclidean': within_range_flag_90_euclidean.cpu().detach().numpy(),
-            'within_range_flag_95_euclidean': within_range_flag_95_euclidean.cpu().detach().numpy(),
-            'within_range_flag_97_euclidean': within_range_flag_97_euclidean.cpu().detach().numpy(),
-            'within_range_flag_90_nonconformity': within_range_flag_90_nonconformity.cpu().detach().numpy(),
-            'within_range_flag_95_nonconformity': within_range_flag_95_nonconformity.cpu().detach().numpy(),
-            'within_range_flag_97_nonconformity': within_range_flag_97_nonconformity.cpu().detach().numpy(),
-            'within_range_flag_90_euclidean_mm': within_range_flag_90_euclidean_mm.cpu().detach().numpy(),
-            'within_range_flag_95_euclidean_mm': within_range_flag_95_euclidean_mm.cpu().detach().numpy(),
-            'within_range_flag_97_euclidean_mm': within_range_flag_97_euclidean_mm.cpu().detach().numpy(),
             'within_range_flag_90_nonconformity_mm': within_range_flag_90_nonconformity_mm.cpu().detach().numpy(),
             'within_range_flag_95_nonconformity_mm': within_range_flag_95_nonconformity_mm.cpu().detach().numpy(),
             'within_range_flag_97_nonconformity_mm':within_range_flag_97_nonconformity_mm.cpu().detach().numpy()
