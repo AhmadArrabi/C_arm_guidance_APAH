@@ -21,7 +21,8 @@ def parse_args(input_args=None):
     parser.add_argument(
         "--log_dir",
         type=str,
-        help=("Be careful when using deep green or black diamond")
+        default='./logs',
+        help=("saving calibration stats and logs")
     )
     parser.add_argument(
         "--exp_name",
@@ -175,7 +176,7 @@ def main(args):
             
         eval_dict['nll'] = eval_nll
         
-        torch.save(eval_dict, f'{log_dir}/calibration_stats_{DEVICE}.pt')        
+        torch.save(eval_dict, f'{log_dir}/calibration_stats.pt')        
 
 if __name__=="__main__":
     args = parse_args()
