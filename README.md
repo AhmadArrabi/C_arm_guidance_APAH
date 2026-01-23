@@ -7,10 +7,6 @@
 This repository contains the official implementation of the paper **[Automated C-Arm Positioning via Conformal Landmark Localization](https://openaccess.thecvf.com/content/ICCV2025W/APAH/html/Arrabi_Automated_C-Arm_Positioning_via_Conformal_Landmark_Localization_ICCVW_2025_paper.html)**, accepted at the **[ICCV Workshop on Advanced Perception for Autonomous Healthcare (APAH), 2025](https://apahws.github.io/)**.
 
 ## Introduction
-
-Our method automates translational C-arm positioning by regressing the displacement vectors from the current view to anatomical landmarks. We use conformal prediction to provide valid confidence intervals for the model's predictions, ensuring safety and reliability in clinical settings.
-
-### Model Overview
 <p align="center">
   <img src="assets/main_model.svg" width="85%">
 </p>
@@ -18,6 +14,8 @@ Our method automates translational C-arm positioning by regressing the displacem
 <p align="center">
   <img src="assets/conformal_score.svg" width="75%">
 </p>
+Our method automates translational C-arm positioning by regressing the displacement vectors from the current view to anatomical landmarks. We use conformal prediction to provide valid confidence intervals for the model's predictions, ensuring safety and reliability in clinical settings.
+
 
 ---
 
