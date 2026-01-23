@@ -114,7 +114,7 @@ def main(args):
     elif args.augmentation_strength == 'none':
         augmentation_params = {'p': 0.0, 'shift': 0.0}
 
-    dataset = Landmark_regression_dataset(augmentation=True, augmentation_params=augmentation_params, head_only=args.head_only, mode='train', size=img_size)
+    dataset = Landmark_regression_dataset(root_data=args.data_dir, augmentation=True, augmentation_params=augmentation_params, head_only=args.head_only, mode='train', size=img_size)
     loader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=8, pin_memory=True)
     
     if args.is_probabilistic:
